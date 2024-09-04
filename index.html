@@ -1,0 +1,208 @@
+<!DOCTYPE html>  
+<html lang="en">  
+<head>  
+    <meta charset="UTF-8">  
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">  
+    <title>Horn.Search Plus</title>  
+    <style>  
+        .top-right-link {  
+            position: absolute;  
+            top: 10px; /* 距离页面顶部的距离 */  
+            right: 10px; /* 距离页面右侧的距离 */  
+            text-decoration: none; /* 去除下划线 */  
+            color: #007bff; /* 链接颜色 */  
+            font-size: 12px; /* 字体大小 */  
+            font-weight: bold; /* 字体加粗 */  
+            padding: 5px 10px; /* 内边距，可选，用于增加点击区域 */  
+            border-radius: 15px; /* 边框圆角，可选 */  
+   
+            transition: background-color 0.3s; /* 背景色过渡效果，可选 */  
+        }  
+  
+        /* 当鼠标悬停在链接上时改变背景色，增加用户交互反馈 */  
+        .top-right-link:hover {  
+            background-color: #e9ecef;  
+        }
+         body {  
+            font-family: HarmonyOS Sans SC,Microsoft YaHei;  
+            display: flex;  
+            justify-content: center;  
+            align-items: center;  
+            height: 100vh;  
+            margin: 0;  
+            background-color: #f0f0f0;  
+            background-image: url('https://bing.img.run/rand_1366x768.php');  
+            background-size: cover; /* 背景图片覆盖整个容器 */  
+
+    background-repeat: no-repeat; /* 背景图片不重复 */  
+        }  
+         @media (max-width: 768px) {  
+    body {  
+        /* 对于小屏幕，你可能想要调整背景图片的显示方式 */  
+        background-size: contain; /* 或者使用其他值，根据你的需求来定 */  
+    }  
+}
+        .fade-in {  
+    opacity: 0; /* 初始透明度为0 */  
+    animation: fadeIn 1s forwards; /* 应用fadeIn动画，持续1秒，动画完成后保持最后一帧状态 */  
+    }  
+  
+    @keyframes fadeIn {  
+    from {  
+        opacity: 0;  
+    }  
+    to {  
+        opacity: 1;  
+    }  
+    }
+        .search-container {  
+            width: 50%;  
+            max-width: 600px;  
+            padding: 30px;  
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);  
+            background-color: #fff;  
+            border-radius: 20px;  
+        }  
+        input[type="text"] {  
+            width: calc(100% - 110px);  
+            padding: 10px;  
+            margin-right: 10px;  
+            border: 1px solid #ccc;  
+            border-radius: 20px;  
+           transition: background-color 0.3s;
+        }  
+        input[type="text"]:hover {  
+            background-color: #e9ecef;  
+       }
+        button {  
+            padding: 10px 20px;  
+            background-color: #0078d4;  
+            color: white;  
+            border: none;  
+            border-radius: 29px;  
+            cursor: pointer;  
+            transition: background-color 0.2s;
+        }  
+        button:hover {  
+            background-color: #005a9e;  
+        } 
+        /* ...（之前的样式保持不变，或根据需要调整）... */  
+        .search-container {  
+            /* ...（之前的样式）... */  
+            display: flex;  
+            flex-direction: column; /* 使子元素垂直排列 */  
+            align-items: center;  
+        }  
+        .baidu-link-container {  
+            display: inline-block; /* 或使用 block/flex 取决于你的需求 */  
+            padding: 10px 10px; /* 内边距 */  
+            border: 1px solid #ccc; /* 边框 */  
+            border-radius: 5px; /* 边框圆角 */  
+            background-color: #f8f9fa; /* 背景色，浅色 */  
+            margin-top: 20px; /* 与上方元素的间距 */  
+            text-align: center; /* 文本居中 */  
+            text-decoration: none; /* 移除下划线（虽然这里可能不需要，因为我们在a标签上设置）*/  
+            transition: background-color 0.3s;
+        }  
+        .baidu-link-container:hover {  
+            background-color: #e9ecef;  
+       }
+        .baidu-link {  
+            display: block; /* 占据整个容器的空间 */  
+            color: #007bff; /* 链接颜色 */  
+            text-decoration: none; /* 移除下划线 */  
+        }  
+        .search-engines {  
+            margin-bottom: 5px;  
+        }  
+        .search-engines select {  
+            padding: 5px;  
+            margin-right: 10px;  
+            border: 1px solid #ccc;  
+            border-radius: 55px;  
+            transition: background-color 0.3s;
+        }  
+        .search-engines select:hover {  
+            background-color: #e9ecef;  
+       }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #3d3a3a;
+
+        --borderColor: #2c2c3a;
+        --primary: #24acf2;
+      }
+    }
+
+    @media (prefers-color-scheme: light) {
+      :root {
+        --bg: #efefef;
+
+        --borderColor: #2c2c3a;
+        --primary: #1bcfe7;
+      }
+    }
+
+
+    body {
+      background-color: var(--bg);
+      color: var(--textColor);
+    }
+
+    .flex {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      width: 100vw;
+    }
+    </style>  
+</head>  
+<body>
+   
+    <div class="search-container  fade-in">
+        <div class="search-engines">  
+            <select id="searchEngine" onchange="changeSearchEngine()">  
+                <option value="https://www.bing.com/search?q=">必应(默认)</option>  
+                <option value="https://www.baidu.com/">百度(暂仅只能进入主页)</option>  
+                <option value="https://www.sogou.com/web">搜狗(暂仅只能进入主页)</option>  
+               <option value="https://www.so.com/s?q=">360</option>
+                <option value="https://quark.sm.cn/s?q=">夸克</option>  
+              <option value="https://so.toutiao.com/search">今日头条(暂仅只能进入主页)</option>
+               <option value="https://www.chinaso.com/newssearch/all/allResults?q=">中国搜索</option>
+
+
+            </select>  
+        </div>  
+         <h1>Horn.Search Plus</h1> 
+        <form id="searchForm" action="https://www.bing.com/search" method="get" target="_blank">  
+            <input type="text" name="q" placeholder="输入网址或搜索内容…">  
+            <button type="submit">搜索</button>  
+        </form>  
+        <div class="baidu-link-container">  
+            <a href="https://horn-studio.github.io/WebSiteList/" class="baidu-link" title="访问百度主页">  
+                🏞️<br> 网址大全 <span></span>  
+            </a>  
+        </div>
+      <div class="baidu-link-container">  
+            <a href="https://horn-studio.github.io/Horn.Browser_Checker/" class="baidu-link" title="访问百度主页">  
+                🏜️<br> Horn.Browser版本检测 <span></span>  
+            </a>  
+        </div>    
+    </div>  
+        <a href="https://github.com/Horn-Studio/Horn.Search" class="top-right-link">版本:1.38.Pre(2024年9月4日更新)</a>
+     <script>  
+        function changeSearchEngine() {  
+            var select = document.getElementById('searchEngine');  
+            var form = document.getElementById('searchForm');  
+
+  
+            // 更新表单的action属性  
+            form.action = select.value;  
+  
+        }  
+    </script>  
+     
+</body>  
+</html>
