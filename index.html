@@ -1,29 +1,42 @@
-<!DOCTYPE html>  
-<html lang="en">  
-<head>  
-    <meta charset="UTF-8">  
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">  
     <meta name="viewport" content="width=device-width, initial-scale=1.0">  
     <title>Horn.Search Plus</title>  
     <style>  
+        /* 新增时钟样式 */
+        #clock {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: #fff;
+            font-size: 51px;
+            font-weight: bold;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            z-index: 9999;
+            pointer-events: none;
+        }
+
         .top-right-link {  
             position: absolute;  
-            top: 10px; /* 距离页面顶部的距离 */  
-            right: 10px; /* 距离页面右侧的距离 */  
-            text-decoration: none; /* 去除下划线 */  
-            color: #007bff; /* 链接颜色 */  
-            font-size: 12px; /* 字体大小 */  
-            font-weight: bold; /* 字体加粗 */  
-            padding: 5px 10px; /* 内边距，可选，用于增加点击区域 */  
-            border-radius: 15px; /* 边框圆角，可选 */  
-   
-            transition: background-color 0.3s; /* 背景色过渡效果，可选 */  
+            top: 10px;  
+            right: 10px;  
+            text-decoration: none;  
+            color: #007bff;  
+            font-size: 12px;  
+            font-weight: bold;  
+            padding: 5px 10px;  
+            border-radius: 15px;  
+            transition: background-color 0.3s;  
         }  
-  
-        /* 当鼠标悬停在链接上时改变背景色，增加用户交互反馈 */  
+
         .top-right-link:hover {  
             background-color: #e9ecef;  
         }
-         body {  
+         
+        body {  
             font-family: HarmonyOS Sans SC,Microsoft YaHei;  
             display: flex;  
             justify-content: center;  
@@ -31,62 +44,62 @@
             height: 100vh;  
             margin: 0;  
             background-color: #f0f0f0;  
-            background-image: url('https://bing.img.run/rand_1366x768.php');  
-            background-size: cover; /* 背景图片覆盖整个容器 */  
-
-    background-repeat: no-repeat; /* 背景图片不重复 */  
+            background-image: url('https://www.todaybing.com/api/today/cn');  
+            background-size: cover;  
+            background-repeat: no-repeat;  
         }  
-         @media () {  
-    body {  
-        /* 对于小屏幕，你可能想要调整背景图片的显示方式 */  
-        background-size: contain; /* 或者使用其他值，根据你的需求来定 */  
-    }  
-}
-      .hidden {  
-    display: none !important;  
-}  
+
+        @media () {  
+            body {  
+                background-size: contain;  
+            }  
+        }
+
+        .hidden {  
+            display: none !important;  
+        }  
+
         .fade-in {  
-    opacity: 0; /* 初始透明度为0 */  
-    animation: fadeIn 1s forwards; /* 应用fadeIn动画，持续1秒，动画完成后保持最后一帧状态 */  
-    }  
-    body.hidden-elements .search-container {  
-    display: none;  
-}
-    @keyframes fadeIn {  
-    from {  
-        opacity: 0;  
-    }  
-    to {  
-        opacity: 0.85;  
-    }  
-    }
-    .search-container {  
-    opacity: 1;  
-    transition: opacity 0.5s ease-in-out;  
-}  
-  
-.search-container.hidden {  
-    opacity: 0;  
-}  
+            opacity: 0;  
+            animation: fadeIn 1s forwards;  
+        }  
+
+        body.hidden-elements .search-container {  
+            display: none;  
+        }
+
+        @keyframes fadeIn {  
+            from { opacity: 0; }  
+            to { opacity: 0.85; }  
+        }
+
         .search-container {  
+            opacity: 1;  
+            transition: opacity 0.5s ease-in-out;  
             width: 50%;  
             max-width: 600px;  
             padding: 30px;  
             box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.2); 
             background-color: #fff;  
             border-radius: 30px;  
+            display: flex;  
+            flex-direction: column;  
+            align-items: center;  
         }  
+
         input[type="text"] {  
             width: calc(100% - 110px);  
             padding: 10px;  
             margin-right: 10px;  
             border: 1px solid #ccc;  
             border-radius: 20px;  
-           transition: background-color 0.3s;
+            transition: background-color 0.3s;
         }  
+
         input[type="text"]:hover {  
             background-color: #e9ecef;  
-       }
+        }
+
         button {  
             padding: 10px 20px;  
             background-color: #0078d4;  
@@ -96,38 +109,36 @@
             cursor: pointer;  
             transition: background-color 0.2s;
         }  
+
         button:hover {  
             background-color: #005a9e;  
         } 
-        /* ...（之前的样式保持不变，或根据需要调整）... */  
-        .search-container {  
-            /* ...（之前的样式）... */  
-            display: flex;  
-            flex-direction: column; /* 使子元素垂直排列 */  
-            align-items: center;  
-        }  
+
         .baidu-link-container {  
-            display: inline-block; /* 或使用 block/flex 取决于你的需求 */  
-            padding: 10px 10px; /* 内边距 */  
-            border: 1px solid #ccc; /* 边框 */  
-            border-radius: 5px; /* 边框圆角 */  
-            background-color: #f8f9fa; /* 背景色，浅色 */  
-            margin-top: 20px; /* 与上方元素的间距 */  
-            text-align: center; /* 文本居中 */  
-            text-decoration: none; /* 移除下划线（虽然这里可能不需要，因为我们在a标签上设置）*/  
+            display: inline-block;  
+            padding: 10px 10px;  
+            border: 1px solid #ccc;  
+            border-radius: 5px;  
+            background-color: #f8f9fa;  
+            margin-top: 20px;  
+            text-align: center;  
             transition: background-color 0.3s;
         }  
+
         .baidu-link-container:hover {  
             background-color: #e9ecef;  
-       }
+        }
+
         .baidu-link {  
-            display: block; /* 占据整个容器的空间 */  
-            color: #007bff; /* 链接颜色 */  
-            text-decoration: none; /* 移除下划线 */  
+            display: block;  
+            color: #007bff;  
+            text-decoration: none;  
         }  
+
         .search-engines {  
             margin-bottom: 5px;  
         }  
+
         .search-engines select {  
             padding: 5px;  
             margin-right: 10px;  
@@ -135,61 +146,52 @@
             border-radius: 55px;  
             transition: background-color 0.3s;
         }  
+
         .search-engines select:hover {  
             background-color: #e9ecef;  
-       }
+        }
 
-    @media (prefers-color-scheme: dark) {
-      :root {
-        --bg: #3d3a3a;
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg: #3d3a3a;
+                --borderColor: #2c2c3a;
+                --primary: #24acf2;
+            }
+        }
 
-        --borderColor: #2c2c3a;
-        --primary: #24acf2;
-      }
-    }
+        @media (prefers-color-scheme: light) {
+            :root {
+                --bg: #efefef;
+                --borderColor: #2c2c3a;
+                --primary: #1bcfe7;
+            }
+        }
 
-    @media (prefers-color-scheme: light) {
-      :root {
-        --bg: #efefef;
-
-        --borderColor: #2c2c3a;
-        --primary: #1bcfe7;
-      }
-    }
-
-
-    body {
-      background-color: var(--bg);
-      color: var(--textColor);
-    }
-
-    .flex {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
-      width: 100vw;
-    }
+        .flex {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            width: 100vw;
+        }
     </style>  
-    
 </head>  
-<body>
-   
-    <div class="search-container  fade-in">
+<body class="">
+    <div id="clock"></div>
+
+    <div class="search-container fade-in" style="transition: opacity 0.5s ease-out; opacity: 0;">
         <div class="search-engines">  
             <select id="searchEngine" onchange="changeSearchEngine()">  
                 <option value="https://www.bing.com/search?q=">必应(默认)</option>  
-                <option value="https://www.baidu.com/">百度(暂仅只能进入主页)</option>  
-                <option value="https://www.sogou.com/web">搜狗(暂仅只能进入主页)</option>  
-               <option value="https://www.so.com/s?q=">360</option>
+                <option value="https://www.baidu.com/s?wd=">百度</option>  
+                <option value="https://www.sogou.com/web?query=">搜狗</option>  
+                <option value="https://www.so.com/s?q=">360</option>
                 <option value="https://quark.sm.cn/s?q=">夸克</option>  
-              <option value="https://so.toutiao.com/search">今日头条(暂仅只能进入主页)</option>
-               <option value="https://www.chinaso.com/newssearch/all/allResults?q=">中国搜索</option>
-
-
+                <option value="https://so.toutiao.com/search?q=">今日头条</option>
+                <option value="https://www.chinaso.com/newssearch/all/allResults?q=">中国搜索</option>
             </select>  
         </div>  
-         <h1>Horn.Search Plus</h1> 
+        <h1>Horn.Search Plus</h1> 
         <form id="searchForm" action="https://www.bing.com/search" method="get" target="_blank">  
             <input type="text" name="q" placeholder="输入网址或搜索内容…">  
             <button type="submit">搜索</button>  
@@ -199,89 +201,63 @@
                 🏞️<br> 网址大全 <span></span>  
             </a>  
         </div>
+        <a href="https://github.com/Horn-Studio/Horn.Search-Plus" class="top-right-link">版本:1.0.4.Plus(2025年5月1日更新)</a>
+    </div>
 
-        <a href="https://github.com/Horn-Studio/Horn.Search-Plus" class="top-right-link">版本:1.0.2.PrePlus(2024年9月5日更新)</a>
-     <script>  
-        function changeSearchEngine() {  
-            var select = document.getElementById('searchEngine');  
-            var form = document.getElementById('searchForm');  
-
-  
-            // 更新表单的action属性  
-            form.action = select.value;  
-  
-        }  
-    </script> 
     <script>  
-    let timer;  
-    const hideAfter = 60000; // 1分钟，以毫秒为单位  
+        // 实时时钟功能
+        function updateClock() {
+            const now = new Date();
+            const hours = now.getHours().toString().padStart(2, '0');
+            const minutes = now.getMinutes().toString().padStart(2, '0');
+            const seconds = now.getSeconds().toString().padStart(2, '0');
+            document.getElementById('clock').textContent = `${hours}:${minutes}:${seconds}`;
+        }
+        setInterval(updateClock, 1000);
+        updateClock();
 
-    // 监听鼠标移动和点击事件  
-    document.addEventListener('mousemove', resetTimer);  
-    document.addEventListener('click', resetTimer);  
-    document.addEventListener('keypress', resetTimer);  
-
-    function resetTimer() {  
-        // 清除之前的定时器（如果存在）  
-        clearTimeout(timer);  
-
-        // 如果元素已经被隐藏，则显示它们  
-        if (document.body.classList.contains('hidden-elements')) {  
-            document.body.classList.remove('hidden-elements');  
-            // 如果需要淡入效果，可以为需要显示的元素添加fade-in类  
-            // 注意：这里我们直接显示所有元素，不添加淡入效果  
+        // 搜索引擎修复
+        function changeSearchEngine() {  
+            const select = document.getElementById('searchEngine');  
+            const form = document.getElementById('searchForm');  
+            form.action = select.value;  
         }  
 
-        // 设置新的定时器  
-        timer = setTimeout(hideElements, hideAfter);  
-    }  
+        // 自动隐藏逻辑
+        let timer;  
+        const hideAfter = 60000; 
 
-function hideElements() {  
-    // 假设这是用来控制其他非动画效果的，如果需要的话  
-    document.body.classList.add('hidden-elements');  
-  
-    // 假设除了背景图片外，我们想要隐藏所有类为search-container的元素  
-    const searchContainers = document.querySelectorAll('.search-container');  
-  
-    // 遍历每个元素，并为其添加淡出效果  
-    searchContainers.forEach(container => {  
-        // 首先，确保元素有一个过渡效果（如果CSS中未定义）  
-        container.style.transition = 'opacity 0.5s ease-out';  
-  
-        // 设置opacity为0以开始淡出效果  
-        // 注意：如果CSS中已经有.hidden类定义了opacity: 0和transition，则这行代码可能不是必需的  
-        // 但为了确保淡出效果，我们在这里直接设置  
-        container.style.opacity = 0;  
-  
-        // 如果你想要在CSS中处理淡出效果，并且只需要添加类来触发它，  
-        // 那么你可以只保留下面的代码行，并确保CSS中有相应的定义  
-         //container.classList.add('hidden');  
-  
-        // 如果需要，可以在这里添加逻辑来检查淡出是否完成（例如，使用setTimeout或Promise）  
-        // 但通常，CSS过渡完成后，元素会自动隐藏（如果opacity设置为0）  
-    });  
-  
-    // 可能还需要隐藏其他元素，具体取决于您的页面布局  
-    // ...  
-}
+        document.addEventListener('mousemove', resetTimer);  
+        document.addEventListener('click', resetTimer);  
+        document.addEventListener('keypress', resetTimer);  
 
-    // 初始时调用一次resetTimer，以便从页面加载时就开始计时  
-    resetTimer();  
+        function resetTimer() {  
+            clearTimeout(timer);  
+            if (document.body.classList.contains('hidden-elements')) {  
+                document.body.classList.remove('hidden-elements');  
+            }  
+            timer = setTimeout(hideElements, hideAfter);  
+        }  
 
-    // 点击屏幕恢复元素（如果需要）  
-    document.addEventListener('click', function() {  
-        if (document.body.classList.contains('hidden-elements')) {  
-            resetTimer(); // 重置定时器  
-            document.body.classList.remove('hidden-elements');  
-            // 如果需要，移除hidden类以显示元素  
-            const searchContainers = document.querySelectorAll('.search-container.hidden');  
+        function hideElements() {  
+            document.body.classList.add('hidden-elements');  
+            const searchContainers = document.querySelectorAll('.search-container');  
             searchContainers.forEach(container => {  
-                container.classList.remove('hidden');  
-                // 如果需要，可以添加fade-in类来实现淡入效果  
+                container.style.transition = 'opacity 0.5s ease-out';  
+                container.style.opacity = 0;  
             });  
         }  
-    });  
-</script> 
-     
-</body>  
+
+        document.addEventListener('click', function() {  
+            if (document.body.classList.contains('hidden-elements')) {  
+                resetTimer();  
+                document.body.classList.remove('hidden-elements');  
+                const searchContainers = document.querySelectorAll('.search-container.hidden');  
+                searchContainers.forEach(container => {  
+                    container.classList.remove('hidden');  
+                });  
+            }  
+        });  
+    </script> 
+</body>
 </html>
