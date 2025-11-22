@@ -1,263 +1,413 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">  
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">  
-    <title>Horn.Search Plus</title>  
-    <style>  
-        /* 新增时钟样式 */
-        #clock {
-            position: fixed;
-            top: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            color: #fff;
-            font-size: 51px;
-            font-weight: bold;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-            z-index: 9999;
-            pointer-events: none;
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Horn.Search Plus</title>
+    <style>
+        /* 深浅色模式变量 */
+        :root {
+            --bg-color: #f0f0f0;
+            --container-bg: #ffffff; /* 浅色模式背景 */
+            --text-color: #000000;
+            --border-color: #cccccc;
+            --link-color: #007bff;
+            --button-bg: #0078d4;
+            --button-hover-bg: #005a9e;
+            --input-bg: #ffffff;
+            --input-hover-bg: #e9ecef;
+            --link-container-bg: #f8f9fa;
+            --link-container-hover-bg: #e9ecef;
+            --select-bg: #ffffff;
+            --select-hover-bg: #e9ecef;
         }
-
-        .top-right-link {  
-            position: absolute;  
-            top: 10px;  
-            right: 10px;  
-            text-decoration: none;  
-            color: #007bff;  
-            font-size: 12px;  
-            font-weight: bold;  
-            padding: 5px 10px;  
-            border-radius: 15px;  
-            transition: background-color 0.3s;  
-        }  
-
-        .top-right-link:hover {  
-            background-color: #e9ecef;  
+        /* 深色模式变量 */
+        .dark-mode {
+            --bg-color: #1e1e1e;
+            --container-bg: #2d2d2d; /* 深色模式背景，降低透明度 */
+            --text-color: #e0e0e0;
+            --border-color: #555555;
+            --link-color: #64b5f6;
+            --button-bg: #0d47a1;
+            --button-hover-bg: #0b3d8e;
+            --input-bg: #3c3c3c;
+            --input-hover-bg: #4c4c4c;
+            --link-container-bg: #3c3c3c;
+            --link-container-hover-bg: #4c4c4c;
+            --select-bg: #3c3c3c;
+            --select-hover-bg: #4c4c4c;
         }
-         
-        body {  
-            font-family: HarmonyOS Sans SC,Microsoft YaHei;  
-            display: flex;  
-            justify-content: center;  
-            align-items: center;  
-            height: 100vh;  
-            margin: 0;  
-            background-color: #f0f0f0;  
-            background-image: url('https://www.todaybing.com/api/today/cn');  
-            background-size: cover;  
-            background-repeat: no-repeat;  
-        }  
-
-        @media () {  
-            body {  
-                background-size: contain;  
-            }  
+        body {
+            font-family: HarmonyOS Sans SC, Microsoft YaHei;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: var(--bg-color);
+            background-image: url('https://uapis.cn/api/v1/image/bing-daily');
+            background-size: cover;
+            background-repeat: no-repeat;
+            color: var(--text-color);
+            transition: background-color 0.3s, color 0.3s;
         }
-
-        .hidden {  
-            display: none !important;  
-        }  
-
-        .fade-in {  
-            opacity: 0;  
-            animation: fadeIn 1s forwards;  
-        }  
-
-        body.hidden-elements .search-container {  
-            display: none;  
+        .hidden {
+            display: none !important;
         }
-
-        @keyframes fadeIn {  
-            from { opacity: 0; }  
-            to { opacity: 0.85; }  
+        .fade-in {
+            opacity: 0;
+            animation: fadeIn 1s forwards;
         }
-
-        .search-container {  
-            opacity: 1;  
-            transition: opacity 0.5s ease-in-out;  
-            width: 50%;  
-            max-width: 600px;  
-            padding: 30px;  
-            box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.2); 
-            background-color: #fff;  
-            border-radius: 30px;  
-            display: flex;  
-            flex-direction: column;  
-            align-items: center;  
-        }  
-
-        input[type="text"] {  
-            width: calc(100% - 110px);  
-            padding: 10px;  
-            margin-right: 10px;  
-            border: 1px solid #ccc;  
-            border-radius: 20px;  
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; } /* 移除浅色模式下的透明度 */
+        }
+        .search-container {
+            opacity: 1;
+            transition: opacity 0.5s ease-in-out;
+            width: 40%;
+            max-width: 500px;
+            padding: 20px;
+            box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.2);
+            background-color: var(--container-bg); /* 使用 CSS 变量 */
+            border-radius: 25px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+        .search-engines {
+            margin-bottom: 10px;
+            width: 100%;
+        }
+        .search-engines select {
+            padding: 4px 8px;
+            margin-right: 10px;
+            border: 1px solid var(--border-color);
+            border-radius: 25px;
+            background-color: var(--select-bg);
+            color: var(--text-color);
+            font-size: 14px;
             transition: background-color 0.3s;
-        }  
-
-        input[type="text"]:hover {  
-            background-color: #e9ecef;  
         }
-
-        button {  
-            padding: 10px 20px;  
-            background-color: #0078d4;  
-            color: white;  
-            border: none;  
-            border-radius: 29px;  
-            cursor: pointer;  
-            transition: background-color 0.2s;
-        }  
-
-        button:hover {  
-            background-color: #005a9e;  
-        } 
-
-        .baidu-link-container {  
-            display: inline-block;  
-            padding: 10px 10px;  
-            border: 1px solid #ccc;  
-            border-radius: 5px;  
-            background-color: #f8f9fa;  
-            margin-top: 20px;  
-            text-align: center;  
-            transition: background-color 0.3s;
-        }  
-
-        .baidu-link-container:hover {  
-            background-color: #e9ecef;  
+        .search-engines select:hover {
+            background-color: var(--select-hover-bg);
         }
-
-        .baidu-link {  
-            display: block;  
-            color: #007bff;  
-            text-decoration: none;  
-        }  
-
-        .search-engines {  
-            margin-bottom: 5px;  
-        }  
-
-        .search-engines select {  
-            padding: 5px;  
-            margin-right: 10px;  
-            border: 1px solid #ccc;  
-            border-radius: 55px;  
-            transition: background-color 0.3s;
-        }  
-
-        .search-engines select:hover {  
-            background-color: #e9ecef;  
+        h1 {
+            margin-top: 8px;
+            margin-bottom: 15px;
+            color: var(--text-color);
+            font-size: 24px;
         }
-
-        @media (prefers-color-scheme: dark) {
-            :root {
-                --bg: #3d3a3a;
-                --borderColor: #2c2c3a;
-                --primary: #24acf2;
-            }
-        }
-
-        @media (prefers-color-scheme: light) {
-            :root {
-                --bg: #efefef;
-                --borderColor: #2c2c3a;
-                --primary: #1bcfe7;
-            }
-        }
-
-        .flex {
+        #searchForm {
             display: flex;
             align-items: center;
+            width: 100%;
+            margin-bottom: 15px;
+        }
+        input[type="text"] {
+            flex: 1;
+            padding: 8px;
+            border: 1px solid var(--border-color);
+            border-radius: 18px;
+            background-color: var(--input-bg);
+            color: var(--text-color);
+            font-size: 14px;
+            transition: background-color 0.3s;
+        }
+        input[type="text"]:hover {
+            background-color: var(--input-hover-bg);
+        }
+        button {
+            padding: 8px 16px;
+            background-color: var(--button-bg);
+            color: white;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            margin-left: 8px;
+            font-size: 14px;
+        }
+        button:hover {
+            background-color: var(--button-hover-bg);
+        }
+        .links-container {
+            width: 100%;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
             justify-content: center;
-            height: 100vh;
-            width: 100vw;
+            margin-bottom: 10px;
         }
-    </style>  
-</head>  
-<body class="">
-    <div id="clock"></div>
-
-    <div class="search-container fade-in" style="transition: opacity 0.5s ease-out; opacity: 0;">
-        <div class="search-engines">  
-            <select id="searchEngine" onchange="changeSearchEngine()">  
-                <option value="https://www.bing.com/search?q=">必应(默认)</option>  
-                <option value="https://www.baidu.com/s?wd=">百度</option>  
-                <option value="https://www.sogou.com/web?query=">搜狗</option>  
+        .link-container {
+            display: inline-block;
+            padding: 8px;
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+            background-color: var(--link-container-bg);
+            text-align: center;
+            transition: background-color 0.3s;
+            min-width: 70px;
+            flex: 0 0 calc(33.333% - 8px);
+            box-sizing: border-box;
+        }
+        .link-container:hover {
+            background-color: var(--link-container-hover-bg);
+        }
+        .link {
+            display: block;
+            color: var(--link-color);
+            text-decoration: none;
+            font-size: 13px;
+        }
+        .link img {
+            width: 20px;
+            height: 20px;
+            vertical-align: middle;
+            margin-bottom: 3px;
+        }
+        .link span {
+            display: block;
+            margin-top: 3px;
+        }
+        .add-button-container {
+            width: 100%;
+            text-align: center;
+        }
+        .add-btn {
+            padding: 6px 14px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 18px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            font-size: 13px;
+        }
+        .add-btn:hover {
+            background-color: #218838;
+        }
+        .add-form {
+            margin-top: 12px;
+            width: 100%;
+            display: none;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .add-form input, .add-form button {
+            padding: 6px;
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+            background-color: var(--input-bg);
+            color: var(--text-color);
+            font-size: 13px;
+        }
+        .add-form button {
+            background-color: var(--button-bg);
+            color: white;
+            border: none;
+            cursor: pointer;
+            margin-top: 4px;
+        }
+        .add-form button:hover {
+            background-color: var(--button-hover-bg);
+        }
+        .toggle-theme-btn, .version-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            padding: 4px 8px;
+            background-color: #6c757d;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 11px;
+            transition: opacity 0.3s;
+        }
+        .toggle-theme-btn:hover, .version-btn:hover {
+            background-color: #5a6268;
+        }
+        .version-btn {
+            display: none;
+        }
+    </style>
+</head>
+<body class="fade-in">
+    <!-- 深浅色模式切换按钮 -->
+    <button class="toggle-theme-btn" id="toggleThemeBtn">切换主题</button>
+    <button class="version-btn" id="versionBtn">1.0.3</button>
+    <div class="search-container">
+        <div class="search-engines">
+            <select id="searchEngine" onchange="changeSearchEngine()">
+                <option value="https://www.bing.com/search?q=">必应(默认)</option>
                 <option value="https://www.so.com/s?q=">360</option>
-                <option value="https://quark.sm.cn/s?q=">夸克</option>  
-                <option value="https://so.toutiao.com/search?q=">今日头条</option>
+                <option value="https://quark.sm.cn/s?q=">夸克</option>
                 <option value="https://www.chinaso.com/newssearch/all/allResults?q=">中国搜索</option>
-            </select>  
-        </div>  
-        <h1>Horn.Search Plus</h1> 
-        <form id="searchForm" action="https://www.bing.com/search" method="get" target="_blank">  
-            <input type="text" name="q" placeholder="输入网址或搜索内容…">  
-            <button type="submit">搜索</button>  
-        </form>  
-        <div class="baidu-link-container">  
-            <a href="https://horn-studio.github.io/WebSiteList/" class="baidu-link" title="访问百度主页">  
-                🏞️<br> 网址大全 <span></span>  
-            </a>  
+            </select>
         </div>
-        <a href="https://github.com/Horn-Studio/Horn.Search-Plus" class="top-right-link">版本:1.0.4.Plus(2025年5月1日更新)</a>
+        <h1>Horn.Search Plus</h1>
+        <form id="searchForm" action="https://www.bing.com/search" method="get" target="_blank">
+            <input type="text" name="q" placeholder="输入网址或搜索内容…">
+            <button type="submit">搜索</button>
+        </form>
+        <!-- 链接容器 -->
+        <div class="links-container" id="linksContainer">
+            <!-- 网址大全 (固定) -->
+            <div class="link-container">
+                <a href="https://horn-studio.github.io/WebSiteList/" class="link" title="网址大全">
+                    <img src="https://t3.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://horn-studio.github.io/WebSiteList/&size=64" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"20\" height=\"20\" viewBox=\"0 0 24 24\"><path fill=\"%23888\" d=\"M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z\"/></svg>';>
+                    <span>网址大全</span>
+                </a>
+            </div>
+            <!-- 动态添加的链接将插入此处 -->
+        </div>
+        <!-- 添加按钮容器 -->
+        <div class="add-button-container">
+            <button class="add-btn" id="showAddFormBtn">添加按钮</button>
+            <div class="add-form" id="addForm">
+                <input type="text" id="linkTitleInput" placeholder="按钮标题">
+                <input type="text" id="linkUrlInput" placeholder="网页链接">
+                <button type="button" onclick="addLink()">添加</button>
+                <button type="button" onclick="hideAddForm()">取消</button>
+            </div>
+        </div>
     </div>
-
-    <script>  
-        // 实时时钟功能
-        function updateClock() {
-            const now = new Date();
-            const hours = now.getHours().toString().padStart(2, '0');
-            const minutes = now.getMinutes().toString().padStart(2, '0');
-            const seconds = now.getSeconds().toString().padStart(2, '0');
-            document.getElementById('clock').textContent = `${hours}:${minutes}:${seconds}`;
+    <script>
+        // 搜索引擎切换
+        function changeSearchEngine() {
+            const select = document.getElementById('searchEngine');
+            const form = document.getElementById('searchForm');
+            form.action = select.value;
         }
-        setInterval(updateClock, 1000);
-        updateClock();
-
-        // 搜索引擎修复
-        function changeSearchEngine() {  
-            const select = document.getElementById('searchEngine');  
-            const form = document.getElementById('searchForm');  
-            form.action = select.value;  
-        }  
-
-        // 自动隐藏逻辑
-        let timer;  
-        const hideAfter = 60000; 
-
-        document.addEventListener('mousemove', resetTimer);  
-        document.addEventListener('click', resetTimer);  
-        document.addEventListener('keypress', resetTimer);  
-
-        function resetTimer() {  
-            clearTimeout(timer);  
-            if (document.body.classList.contains('hidden-elements')) {  
-                document.body.classList.remove('hidden-elements');  
-            }  
-            timer = setTimeout(hideElements, hideAfter);  
-        }  
-
-        function hideElements() {  
-            document.body.classList.add('hidden-elements');  
-            const searchContainers = document.querySelectorAll('.search-container');  
-            searchContainers.forEach(container => {  
-                container.style.transition = 'opacity 0.5s ease-out';  
-                container.style.opacity = 0;  
-            });  
-        }  
-
-        document.addEventListener('click', function() {  
-            if (document.body.classList.contains('hidden-elements')) {  
-                resetTimer();  
-                document.body.classList.remove('hidden-elements');  
-                const searchContainers = document.querySelectorAll('.search-container.hidden');  
-                searchContainers.forEach(container => {  
-                    container.classList.remove('hidden');  
-                });  
-            }  
-        });  
-    </script> 
+        // 深浅色模式切换
+        const toggleThemeBtn = document.getElementById('toggleThemeBtn');
+        const versionBtn = document.getElementById('versionBtn');
+        const prefersDarkScheme = window.matchMedia("(prefers-color-scheme: dark)");
+        // 检查本地存储的主题设置，否则根据系统主题
+        const currentTheme = localStorage.getItem('theme');
+        if (currentTheme === 'dark') {
+            document.body.classList.add('dark-mode');
+        } else if (currentTheme === 'light') {
+            document.body.classList.remove('dark-mode');
+        } else {
+            // 如果没有本地设置，则根据系统偏好
+            if (prefersDarkScheme.matches) {
+                document.body.classList.add('dark-mode');
+            }
+        }
+        toggleThemeBtn.addEventListener('click', () => {
+            document.body.classList.toggle('dark-mode');
+            if (document.body.classList.contains('dark-mode')) {
+                localStorage.setItem('theme', 'dark');
+            } else {
+                localStorage.setItem('theme', 'light');
+            }
+        });
+        
+        // 版本号按钮显示逻辑
+        let timeoutId;
+        toggleThemeBtn.addEventListener('mouseenter', () => {
+            timeoutId = setTimeout(() => {
+                toggleThemeBtn.style.display = 'none';
+                versionBtn.style.display = 'block';
+            }, 1000);
+        });
+        
+        toggleThemeBtn.addEventListener('mouseleave', () => {
+            clearTimeout(timeoutId);
+        });
+        
+        versionBtn.addEventListener('mouseleave', () => {
+            versionBtn.style.display = 'none';
+            toggleThemeBtn.style.display = 'block';
+        });
+        
+        // 自定义按钮功能
+        const linksContainer = document.getElementById('linksContainer');
+        const showAddFormBtn = document.getElementById('showAddFormBtn');
+        const addForm = document.getElementById('addForm');
+        const linkTitleInput = document.getElementById('linkTitleInput');
+        const linkUrlInput = document.getElementById('linkUrlInput');
+        // 从 localStorage 加载按钮
+        function loadLinks() {
+            const savedLinks = JSON.parse(localStorage.getItem('customLinks')) || [];
+            linksContainer.innerHTML = `<!-- 网址大全 (固定) -->
+            <div class="link-container">
+                <a href="https://horn-studio.github.io/WebSiteList/" class="link" title="网址大全">
+                    <img src="https://t3.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://horn-studio.github.io/WebSiteList/&size=64" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"20\" height=\"20\" viewBox=\"0 0 24 24\"><path fill=\"%23888\" d=\"M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z\"/></svg>';" >
+                    <span>网址大全</span>
+                </a>
+            </div>`;
+            savedLinks.forEach((link, index) => {
+                addLinkToDOM(link.title, link.url, index);
+            });
+        }
+        // 将按钮添加到DOM
+        function addLinkToDOM(title, url, index) {
+            const linkContainer = document.createElement('div');
+            linkContainer.className = 'link-container';
+            linkContainer.innerHTML = `
+                <a href="${url}" class="link" target="_blank">
+                    <img src="https://t3.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=${url}&size=64" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"20\" height=\"20\" viewBox=\"0 0 24 24\"><path fill=\"%23888\" d=\"M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z\"/></svg>';" >
+                    <span>${title}</span>
+                </a>
+                <button type="button" class="remove-btn" onclick="removeLink(${index})" style="margin-top: 3px; padding: 2px 5px; font-size: 11px; background-color: #dc3545; color: white; border: none; border-radius: 3px; cursor: pointer;">移除</button>
+            `;
+            linksContainer.appendChild(linkContainer);
+        }
+        // 添加按钮
+        function addLink() {
+            const title = linkTitleInput.value.trim();
+            const url = linkUrlInput.value.trim();
+            if (!title || !url) {
+                alert('请填写标题和链接');
+                return;
+            }
+            try {
+                new URL(url); // 验证URL格式
+            } catch (e) {
+                alert('请输入有效的链接');
+                return;
+            }
+            const savedLinks = JSON.parse(localStorage.getItem('customLinks')) || [];
+            if (savedLinks.length >= 14) {
+                alert('最多只能添加14个自定义按钮');
+                return;
+            }
+            savedLinks.push({ title, url });
+            localStorage.setItem('customLinks', JSON.stringify(savedLinks));
+            // 添加到DOM
+            addLinkToDOM(title, url, savedLinks.length - 1);
+            // 清空输入并隐藏表单
+            linkTitleInput.value = '';
+            linkUrlInput.value = '';
+            hideAddForm();
+        }
+        // 移除按钮
+        function removeLink(index) {
+            let savedLinks = JSON.parse(localStorage.getItem('customLinks')) || [];
+            if (index >= 0 && index < savedLinks.length) {
+                savedLinks.splice(index, 1);
+                localStorage.setItem('customLinks', JSON.stringify(savedLinks));
+                loadLinks(); // 重新加载所有按钮
+            }
+        }
+        // 显示添加表单
+        function showAddForm() {
+            addForm.style.display = 'flex';
+        }
+        // 隐藏添加表单
+        function hideAddForm() {
+            addForm.style.display = 'none';
+            linkTitleInput.value = '';
+            linkUrlInput.value = '';
+        }
+        // 事件监听器
+        showAddFormBtn.addEventListener('click', showAddForm);
+        // 初始化加载
+        loadLinks();
+    </script>
 </body>
 </html>
